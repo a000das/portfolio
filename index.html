@@ -86,16 +86,17 @@
     gap: 1.2rem;
     text-align: center;
   }
+  /* FIX: profile photo — handles both img and initials fallback */
   .profile-photo {
-    width: 120px; height: 120px; border-radius: 70%;
+    width: 120px; height: 120px; border-radius: 50%;
     border: 3px solid var(--accent2);
     background: var(--surface);
     display: flex; align-items: center; justify-content: center;
     font-family: var(--heading); font-size: 2.2rem;
     color: var(--accent); font-weight: 700;
-    overflow: hidden; flex-shrink: 50;
+    overflow: hidden; flex-shrink: 0;
+    object-fit: cover;
   }
-  .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
   .about-text h3 { font-family: var(--heading); font-size: 1.3rem; color: var(--text); margin-bottom: .6rem; }
   .about-text p  { color: var(--muted); font-size: .93rem; line-height: 1.85; text-align: left; }
 
@@ -119,37 +120,47 @@
 
   /* ── ACHIEVEMENTS ── */
   #achievements { background: var(--surface); }
+
+  /* FIX: was missing semicolon after font-size, causing color to be invalid */
   .ach-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  font-size: 0.75rem;
-}
-.ach-card h4 {
-  font-family: var(--heading);
-  font-size: 1rem
-  color: var(--accent);
-  margin-bottom: .8rem;
-}
-.cert-badge {
-  display: block;
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 1.4rem 1.4rem 1.4rem 1.7rem;
-  border-left: 4px solid var(--accent2);
-  box-shadow: var(--shadow);
-  font-size: .88rem;
-  color: var(--accent);
-  font-weight: 500;
-  margin-bottom: .8rem;
-  text-decoration: none;
-  transition: all .2s;
-}
-.cert-badge:hover {
-  background: var(--surface);
-}
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    font-size: 0.88rem;
+  }
+  .ach-card h4 {
+    font-family: var(--heading);
+    font-size: 1rem;         /* FIX: added missing semicolon here */
+    color: var(--accent);    /* FIX: this was silently dropped before */
+    margin-bottom: .8rem;
+  }
+
+  /* FIX: ach-grid now has proper grid layout, matching cert-wrap */
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.3rem;
+  }
+
+  .cert-badge {
+    display: block;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.4rem 1.4rem 1.7rem;
+    border-left: 4px solid var(--accent2);
+    box-shadow: var(--shadow);
+    font-size: .88rem;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0;        /* FIX: removed margin-bottom since grid handles spacing */
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .cert-badge:hover {
+    background: var(--surface);
+  }
 
   /* ── CONTACT ── */
   .contact-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; }
@@ -193,12 +204,11 @@
   </ul>
 </nav>
 
-<!-- ══ HERO + ABOUT — two columns inside one section ══ -->
+<!-- ══ HERO + ABOUT ══ -->
 <section id="home">
 
-  <!-- ── LEFT: name, role, quick links, CTA ── -->
   <div class="hero-left">
-    <span class="hero-greeting"> Hello, I'm</span>
+    <span class="hero-greeting">Hello, I'm</span>
     <h1 class="hero-name">Aditi Das</h1>
     <p class="hero-role">Software Developer &nbsp;|&nbsp; Web Developer</p>
 
@@ -217,14 +227,14 @@
         </svg>
         aditi000das@gmail.com
       </a>
-      <a href="https://www.linkedin.com/in/aditi000das" target="_blank">
+      <a href="https://www.linkedin.com/in/aditi000das" target="_blank" rel="noopener">
         <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
           <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
         </svg>
         linkedin.com/in/aditi000das
       </a>
-      <a href="https://github.com/a000das" target="_blank">
+      <a href="https://github.com/a000das" target="_blank" rel="noopener">
         <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
           <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
         </svg>
@@ -239,20 +249,22 @@
     </div>
   </div>
 
-  <!-- ── RIGHT: about card ── -->
+  <!-- FIX: profile photo with onerror fallback to initials -->
   <div class="about-card">
-    <!--
-      PROFILE PHOTO
-      Option A (initials — default): keep as-is
-      Option B (real photo): replace the div below with:
-        <img class="profile-photo" src="photo.jpg" alt="Aditi Das">
-    -->
-   <img class="profile-photo" src="profile.jpg" alt="Aditi Das">
+    <div class="profile-photo" id="photo-wrap">
+      <img
+        src="profile.jpg"
+        alt="Aditi Das"
+        style="width:100%;height:100%;object-fit:cover;border-radius:50%;"
+        onerror="this.style.display='none';document.getElementById('photo-initials').style.display='flex';"
+      />
+      <span id="photo-initials" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-family:var(--heading);font-size:2.2rem;color:var(--accent);font-weight:700;">AD</span>
+    </div>
 
     <div class="about-text">
       <h3>About Me</h3>
       <p>
-        A passionate software developer with a knack for crafting elegant web solutions.With a background in computer science and hands-on experience in full-stack development,I thrive on turning complex problems into seamless user experiences. When I'm not coding,you can find me exploring the latest tech trends and contributing to open-source projects.
+        A passionate software developer with a knack for crafting elegant web solutions. With a background in computer science and hands-on experience in full-stack development, I thrive on turning complex problems into seamless user experiences. When I'm not coding, you can find me exploring the latest tech trends and contributing to open-source projects.
         Always eager to connect, collaborate, and create something amazing together.
       </p>
     </div>
@@ -281,9 +293,13 @@
   <p class="section-label">Recognition</p>
   <h2>Achievements &amp; Certificates</h2>
   <div class="divider"></div>
+
   <h3 style="font-family:var(--heading);margin:2rem 0 1rem;font-size:1.05rem;color:var(--muted);">CERTIFICATES</h3>
-  <div id="cert-wrap"style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.3rem;"></div>>
+  <!-- FIX: removed stray extra ">" and added space between id and style attributes -->
+  <div id="cert-wrap" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.3rem;"></div>
+
   <h3 style="font-family:var(--heading);margin:2rem 0 1rem;font-size:1.05rem;color:var(--muted);">ACHIEVEMENTS</h3>
+  <!-- FIX: ach-grid now has CSS grid layout applied via .ach-grid class -->
   <div class="ach-grid" id="ach-grid"></div>
 </section>
 
@@ -318,7 +334,7 @@
           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
           <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
         </svg>
-        <a href="https://www.linkedin.com/in/aditi000das" target="_blank">https://www.linkedin.com/in/aditi000das</a>
+        <a href="https://www.linkedin.com/in/aditi000das" target="_blank" rel="noopener">linkedin.com/in/aditi000das</a>
       </div>
     </div>
 
@@ -346,24 +362,12 @@
 </footer>
 
 <script>
-/* ═══════════════════════════════════════
-   ✏️  YOUR DATA — edit only inside here
-   ═══════════════════════════════════════ */
 const DATA = {
 
   skills: [
-    {
-      category: "Technical Skills",
-      items: ["Java", "Python", "JavaScript", "HTML/CSS", "SQL", "C"]
-    },
-    {
-      category: "Tools",
-      items: ["Git", "VS Code", "Oracle", "Sublime Text", "MySQL"]
-    },
-    {
-      category: "Soft Skills",
-      items: ["Leadership", "Communication", "Teamwork", "Problem Solving","Adaptability"]
-    }
+    { category: "Technical Skills", items: ["Java", "Python", "JavaScript", "HTML/CSS", "SQL", "C"] },
+    { category: "Tools",            items: ["Git", "VS Code", "Oracle", "Sublime Text", "MySQL"] },
+    { category: "Soft Skills",      items: ["Leadership", "Communication", "Teamwork", "Problem Solving", "Adaptability"] }
   ],
 
   projects: [
@@ -371,26 +375,22 @@ const DATA = {
       title: "BRICK BREAKER GAME",
       description: "A simple yet engaging brick breaker game built with HTML, CSS, and JavaScript. Features smooth animations, responsive design, and increasing difficulty levels.",
       tools: ["JavaScript", "HTML", "CSS"],
-      link: "https://pbainst.in/TUTORIAL/Brick%20Breaking/",
-
+      link: "https://pbainst.in/TUTORIAL/Brick%20Breaking/"
     },
     {
       title: "AI CHAT BOT",
-      description: "AN AI-powered chatbot designed to provide instant support and information to users. Built using natural language processing (NLP) techniques, it can understand and respond to user queries in real-time, enhancing customer engagement and satisfaction.",
-      tools: ["React", "Node.js", "MongoDB","OpenAI API","JavaScript, HTML, CSS"],
-      
+      description: "An AI-powered chatbot designed to provide instant support and information to users. Built using natural language processing (NLP) techniques, it can understand and respond to user queries in real-time, enhancing customer engagement and satisfaction.",
+      tools: ["React", "Node.js", "MongoDB", "OpenAI API", "JavaScript", "HTML", "CSS"]
     },
     {
       title: "AI BASED FARMER QUERY SYSTEM",
-      description: "A machine learning-based system to assist farmers with crop-related queries and provide personalized recommendations.Real time support for pest control, weather forecasts, and best farming practices, empowering farmers to make informed decisions and improve crop yields.",
-      tools: ["Python", "TensorFlow", "Flask","weather API","SQL"],
-     
+      description: "A machine learning-based system to assist farmers with crop-related queries and provide personalized recommendations. Real-time support for pest control, weather forecasts, and best farming practices, empowering farmers to make informed decisions and improve crop yields.",
+      tools: ["Python", "TensorFlow", "Flask", "Weather API", "SQL"]
     },
     {
       title: "FERRY TRACKING SYSTEM",
       description: "A real-time ferry tracking system that provides accurate location and status updates for ferry services. Utilizing GPS technology and a user-friendly interface, it allows passengers to track ferry routes, estimated arrival times, and receive notifications about delays or changes in schedule.",
-      tools: ["Figma", "HTML", "CSS", "JavaScript"],
-     
+      tools: ["Figma", "HTML", "CSS", "JavaScript"]
     }
   ],
 
@@ -398,21 +398,19 @@ const DATA = {
     {
       title: "SIH 2024 PARTICIPATION",
       description: "Selected as a participant in the prestigious Smart India Hackathon 2024, showcasing innovative problem-solving skills and contributing to impactful projects addressing real-world challenges."
-    },
-   
+    }
   ],
 
   certificates: [
-    { name: "FERRY TRACKING SYSTEM", link: "cert-sih.pdf" },
-    { name: "AI CHAT BOT ", link: "cert-chatbot.pdf" },
-    { name: "C PROGRAMMING  ", link: "cert-c.png" },
-    { name: "DSA ", link: "cert-dsa.png" },
-    { name: "PYTHON ", link: "cert-python.png" },
-    { name: "WEB DESIGNING ", link: "cert-webdesign.png" },
-    { name: "JAVA PROGRAMMING", link: "cert-java.png" },
+    { name: "FERRY TRACKING SYSTEM",  link: "cert-sih.pdf" },
+    { name: "AI CHAT BOT",            link: "cert-chatbot.pdf" },
+    { name: "C PROGRAMMING",          link: "cert-c.png" },
+    { name: "DSA",                    link: "cert-dsa.png" },
+    { name: "PYTHON",                 link: "cert-python.png" },
+    { name: "WEB DESIGNING",          link: "cert-webdesign.png" },
+    { name: "JAVA PROGRAMMING",       link: "cert-java.png" }
   ]
 };
-/* ═══════════════ END OF YOUR DATA ═══════════════ */
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("footer-year").textContent = new Date().getFullYear();
@@ -421,7 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sg = document.getElementById("skills-grid");
   DATA.skills.forEach(s => {
     const c = document.createElement("div"); c.className = "skill-card";
-    c.innerHTML = `<h4>${s.category}</h4><div class="tag-list">${s.items.map(i=>`<span class="tag">${i}</span>`).join("")}</div>`;
+    c.innerHTML = `<h4>${s.category}</h4><div class="tag-list">${s.items.map(i => `<span class="tag">${i}</span>`).join("")}</div>`;
     sg.appendChild(c);
   });
 
@@ -432,8 +430,8 @@ document.addEventListener("DOMContentLoaded", () => {
     c.innerHTML = `
       <h4>${p.title}</h4>
       <p>${p.description}</p>
-      <div class="project-tools">${p.tools.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
-      ${p.link ? `<a class="project-link" href="${p.link}" target="_blank">
+      <div class="project-tools">${p.tools.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      ${p.link ? `<a class="project-link" href="${p.link}" target="_blank" rel="noopener">
         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
           <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
@@ -453,8 +451,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const cw = document.getElementById("cert-wrap");
   DATA.certificates.forEach(cert => {
     const el = document.createElement(cert.link ? "a" : "span");
-    el.className = "cert-badge"; el.textContent = cert.name;
-    if (cert.link) { el.href = cert.link; el.target = "_blank"; }
+    el.className = "cert-badge";
+    el.textContent = cert.name;
+    if (cert.link) {
+      el.href = cert.link;
+      el.target = "_blank";
+      el.rel = "noopener";
+    }
     cw.appendChild(el);
   });
 });
